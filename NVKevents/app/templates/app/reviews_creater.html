@@ -1,0 +1,36 @@
+{% extends 'app/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="reviews-creator">
+    <div class="my-events-panel">
+        <img src="{% static 'app/img/Background line.png' %}" class="background-line">
+        <h1>ОТЗЫВЫ</h1>
+        <img src="{% static 'app/img/Banner short.jpg' %}" class="list-photo" alt="Дом в НВК" width="789" height="142" />
+        <button onclick="window.history.back();" class="creation-back-button">Назад</button>
+        <div class="choose-role-pannel">
+            <button class="choosen-role-button">Я ОРГАНИЗАТОР</button>
+            <a href="{% url 'reviews_participant' %}">
+                <button>Я УЧАСТНИК</button>
+            </a>
+
+        </div>
+        <ul class="review-list">
+            <!-- <li>
+            <h2>Название</h2>
+            <img src="{% static 'app/img/review background.png' %}" width="229" height="31" />
+            <div class="review">
+                <div class="review-author">
+                    <img src="{% static 'app/img/Profile frame.png' %}" class="profile-frame" width="115" height="115" />
+                    <img src="{% static 'app/img/Profile image.png' %}" class="review-profile-image" alt="аватарка" width="80" height="84" />
+                    <p>User Name</p>
+                </div>
+                <div class="review-text">
+                    <p>В своём стремлении повысить качество жизни, они забывают, что реализация намеченных плановых заданий обеспечивает широкому кругу (специалистов) участие в формировании глубокомысленных рассуждений. Кстати, стремящиеся вытеснить традиционное производство, нанотехнологии призывают нас к новым свершениям, которые, в свою очередь, должны быть объективно рассмотрены соответствующими инстанциями!</p>
+                </div>
+            </div>
+        </li> -->
+        </ul>
+    </div>
+</div>
+{% endblock %}

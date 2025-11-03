@@ -1,0 +1,42 @@
+{% load static %}
+
+{% block leaving-confirmation %}
+<div class="modal-overlay" id="lev{{ index|add:1 }}">
+    <div class="modal-card">
+        <div class="leaving-confirmation">
+            <div class="leaving-confirmation-body">
+                <p>Вы уверенны, что хотите покинуть мероприятие "{{ event.title }}"?</p>
+                <div class="confirmation-buttons">
+                    <button id="no{{ index|add:1 }}">НЕТ</button>
+                    <a href="/leave/{{ event.id }}/" id="leave_event{{ index|add:1 }}">ДА</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    tg = window.Telegram.WebApp;
+    document.getElementById("leave_event{{ index|add:1 }}").href += `${tg.initDataUnsafe.user?.id}`; 
+
+    document.getElementById('leave{{ forloop.counter0 }}').addEventListener('click', function() {
+        document.getElementById('lev{{ index|add:1 }}').style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Блокируем скролл страницы
+    });
+
+    // Закрытие при клике вне карточки
+    document.getElementById('lev{{ index|add:1 }}').addEventListener('click', function(e) {
+        if (e.target === document.getElementById('lev{{ index|add:1 }}')) {
+            document.getElementById('lev{{ index|add:1 }}').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Закрытие при клике на кнопку "Назад"
+    document.getElementById('no{{ index|add:1 }}').addEventListener('click', function(e) {
+        if (e.target === document.getElementById('no{{ index|add:1 }}')) {
+            document.getElementById('lev{{ index|add:1 }}').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+</script>
+{% endblock %}

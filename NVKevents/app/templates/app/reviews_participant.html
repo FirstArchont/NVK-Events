@@ -1,0 +1,35 @@
+{% extends 'app/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="reviews-participant">
+    <div class="my-events-panel">
+        <div style="display: flex;">
+            <img src="{% static 'app/img/Background line.png' %}" class="background-line">
+            <h1>ОТЗЫВЫ</h1>
+            <img src="{% static 'app/img/Banner short.jpg' %}" class="list-photo" alt="Дом в НВК" width="789" height="142" />
+        </div>
+        
+        <button class="creation-back-button">Назад</button>
+        <div class="choose-role-pannel">
+            <a href="{% url 'reviews_creater' %}">
+                <button>Я ОРГАНИЗАТОР</button>
+            </a>
+            <button class="choosen-role-button">Я УЧАСТНИК</button>
+        </div>
+        <ul class="my-events-list">
+            <!-- <li class="my-event">
+            <div class="my-events-image-container">
+                <img src="{% static 'app/img/Event photo1.png' %}" alt="Событие" width="378" heigt="171" />
+                <img src="{% static 'app/img/Popular event overlay.png' %}" class="my-events-event-overlay" width="266" heigt="171" />
+                <span>Название</span>
+                <p>Краткое описание</p>
+            </div>
+            <ul class="change-event-buttons">
+                <li><button>Оставить отзыв</button></li>
+            </ul>
+        </li> -->
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'app/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="my-events-participant">
+    <div class="my-events-panel">
+        <img src="{% static 'app/img/Background line.png' %}" class="background-line">
+        <h1>МОИ МЕРОПРИЯТИЯ</h1>
+        <img src="{% static 'app/img/Banner short.jpg' %}" class="list-photo" alt="Дом в НВК" width="789" height="142" />
+        <button onclick="window.history.back();" class="creation-back-button">Назад</button>
+        <div class="choose-role-pannel">
+            <a id="events-creater">
+                <button>Я ОРГАНИЗАТОР</button>
+            </a>
+
+            <button class="choosen-role-button">Я УЧАСТНИК</button>
+        </div>
+        <ul class="my-events-list">
+            {% if events %}
+                {% for event in events %}
+                    <li class="my-event">
+                        <div class="my-events-image-container" id="container{{ forloop.counter0 }}">
+                            <img src="/media/{{ event.cover }}" alt="Событие" width="378" height="180" />
+                            <img src="{% static 'app/img/Popular event overlay.png' %}" class="my-events-event-overlay" width="266" heigt="171" />
+                            <span>{{ event.title }}</span>
+                            <p>{{ event.short_description }}</p>
+                        </div>
+                        {% include "app/big_card.html" with index=forloop.counter0 %}
+                        <ul class="change-event-buttons">
+                            <li><button>Список участников</button></li>
+                            <li><button id="leave{{ forloop.counter0 }}">Покинуть</button></li>
+                        </ul>
+                        {% include "app/leaving_confirmation.html" with index=forloop.counter0 %}
+                    </li>
+                {% endfor %}
+            {% else %}
+                <p class="empty-list">Вы пока никуда не записывались</p>
+            {% endif %}
+            
+        </ul>
+    </div>
+</div>
+<script>
+    tg = window.Telegram.WebApp;
+    document.getElementById("events-creater").href = `/events-creater/${tg.initDataUnsafe.user?.id}`;
+</script>
+{% endblock %}

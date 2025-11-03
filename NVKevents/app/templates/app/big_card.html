@@ -1,0 +1,66 @@
+{% load static %}
+
+{% block big_card_content %}
+<div class="modal-overlay" id="modal{{ index|add:1 }}">
+    <div class="modal-card">
+        <div class="big-card-backgrpund">
+            <div class="event-big-card" id="big-card{{ index|add:1 }}">
+                <div class="big-card-preview">
+                    <img src="/media/{{ event.cover }}" width="723" height="200" />
+                    <div class="title">{{ event.title }}</div>
+                    <div class="big-card-body">
+                        <div class="description-preview"><p>{{ event.description }}</p></div>
+                        <div class="event-requirements-preview">
+                            <p>Требования к <br />подготовке:</p>
+                            <p>{{ event.participants_requirements }}</p>
+                        </div>
+                        <div class="date-and-members-preview">
+                            <div class="date-preview">
+                                <p>Дата:</p>
+                                <p>{{ event.datetime }}</p>
+                            </div>
+                            <div class="members-preview">
+                                <p>Всего мест:</p>
+                                <p>{{ event.quantity }}</p>
+                            </div>
+                        </div>
+                        <div class="place-preview">
+                            <p>Место:</p>
+                            <p>{{ event.location }}</p>
+                        </div>
+                        <div class="buttons-preview">
+                            <button class="big-card-sign-up-button" id="close-big-card{{ index|add:1 }}">Назад</button>
+                            <a class="big-card-sign-up-button" href="/registration/{{ event.id }}/" id="registration{{ forloop.counter0 }}">Записаться</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+<script>
+    tg = window.Telegram.WebApp;
+    document.getElementById("registration{{ forloop.counter0 }}").href += `${tg.initDataUnsafe.user?.id}`;
+
+    document.getElementById('container{{ forloop.counter0 }}').addEventListener('click', function() {
+        document.getElementById('modal{{ index|add:1 }}').style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Блокируем скролл страницы
+    });
+
+    // Закрытие при клике вне карточки
+    document.getElementById('big-card{{ index|add:1 }}').addEventListener('click', function(e) {
+        if (e.target === document.getElementById('big-card{{ index|add:1 }}')) {
+            document.getElementById('modal{{ index|add:1 }}').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Закрытие при клике на кнопку "Назад"
+    document.getElementById('close-big-card{{ index|add:1 }}').addEventListener('click', function(e) {
+        if (e.target === document.getElementById('close-big-card{{ index|add:1 }}')) {
+            document.getElementById('modal{{ index|add:1 }}').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+</script>
+{% endblock %}

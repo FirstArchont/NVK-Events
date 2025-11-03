@@ -1,0 +1,160 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link href="{% static 'app/css/style.css' %}" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js?57"></script>
+    <title>NVK Events</title>
+</head>
+<body>
+    <div class="application">
+        <div class="left-window">
+            <div class="sidebar">
+                <img src="{% static 'app/img/Incast logo.svg' %}" alt="Лого Incast" width="40" height="40" />
+            </div>
+            <div class="categories">
+                <nav class="main-navigation">
+                    <h3>Навигация</h3>
+                    <button class="cross-button"><img src="{% static 'app/img/Cross button.svg' %}" /></button>
+                    <div class="navigation-line"></div>
+                    <ul class="navigation-panels">
+                        <li class="navigation-panel {% if request.path == '/' %}choosen-navigation-panel{% endif %}">
+                            <img src="{% static 'app/img/Compas.svg' %}" alt="Компас" width="17" height="17" />
+                            <a href="{% url 'index' %}">
+                                <p>Главная</p>
+                            </a>
+                        </li>
+                        <li class="navigation-panel {% if '/events' in request.path %}choosen-navigation-panel{% endif %}">
+                            <img src="{% static 'app/img/Play button.svg' %}" alt="play" width="16" height="17" />
+                            <a id="events_creater">
+                                <p>Мои мероприятия</p>
+                            </a>
+                        </li>
+                        <li class="navigation-panel {% if '/reviews' in request.path %}choosen-navigation-panel{% endif %}">
+                            <img src="{% static 'app/img/Frame.svg' %}" alt="рамка" width="15" height="17" />
+                            <a href="{% url 'reviews_creater' %}">
+                                <p>Отзывы</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div>
+            <div class="high-panel">
+                <button class="menu-button"><img src="{% static 'app/img/Menu button.svg' %}" /></button>
+                <button class="profile-button"><img src="{% static 'app/img/Profile button.svg' %}" /></button>
+            </div>
+            {% block content %}{% endblock %}
+        </div>
+        
+        <div class="right-window">
+            <div class="profile-buttons">
+                <ul class="user-profile-buttons">
+                    <li class="user-profile-button">
+                        <button><img src="{% static 'app/img/Bell.svg' %}" alt="уведомления" width="16" height="17" /></button>
+                    </li>
+                    <li class="user-profile-button">
+                        <button><img src="{% static 'app/img/Messanger.svg' %}" alt="сообщения" width="18" height="17" /></button>
+                    </li>
+                    <li class="user-profile-button">
+                        <button><img src="{% static 'app/img/Gear.svg' %}" alt="настройки" width="20" height="19" /></button>
+                    </li>
+                </ul>
+            </div>
+            <div class="profile">
+                <button class="arrow-button"><img src="{% static 'app/img/Arrow button.svg' %}" /></button>
+                <img src="" id="photo-profile" class="profile-image" alt="аватарка"/>
+                <img src="{% static 'app/img/Profile frame.png' %}" class="profile-frame" width="175" height="175" />
+                <span class="profile-name" id="flname">User Name</span>
+                <p class="userID" id="username">@username</p>
+                <h4>Новые сообщения</h4>
+                <ul class="messages">
+                    <li class="message">
+                        <button>
+                            <img src="{% static 'app/img/Another User Photo1.png' %}" alt="аватарка" width="44" height="44" />
+                            <div class="message-panel">
+                                <p class="nickname">Имя пользователя</p>
+                                <time>5 min ago</time>
+                            </div>
+                        </button>
+                    </li>
+                </ul>
+                <h4>Полезные контакты</h4>
+                <ul class="contacts">
+                    <li class="contact">
+                        <button>
+                            <img src="{% static 'app/img/User photo1.png' %}" width="44" height="44" />
+                            <p>@conatact</p>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const leftWindow = document.querySelector('.left-window');
+    const rightWindow = document.querySelector('.right-window');
+    const menuButton = document.querySelector('.menu-button');
+    const crossButton = document.querySelector('.cross-button');
+    const profileButton = document.querySelector('.profile-button');
+    const arrowButton = document.querySelector('.arrow-button');
+
+    
+    menuButton.addEventListener('click', function() { leftWindow.style.display = 'inline'; });
+    crossButton.addEventListener('click', function() { leftWindow.style.display = 'none'; });
+    profileButton.addEventListener('click', function() { rightWindow.style.display = 'inline'; });
+    arrowButton.addEventListener('click', function() { rightWindow.style.display = 'none'; });
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 1024) {
+            leftWindow.style.removeProperty('display');
+            rightWindow.style.removeProperty('display');
+        }
+    });
+
+    tg = window.Telegram.WebApp;
+
+    // Имя пользователя
+    const firstName = tg.initDataUnsafe.user?.first_name;
+    const lastName = tg.initDataUnsafe.user?.last_name;
+    const username = tg.initDataUnsafe.user?.username;
+    const id = tg.initDataUnsafe.user?.id;
+    const photo_url = tg.initDataUnsafe.user?.photo_url;
+
+    sendToDjango(id, username);
+
+    document.getElementById("flname").textContent = `${firstName} ${lastName}`;
+    document.getElementById("username").textContent = `@${username}`;
+    document.getElementById("photo-profile").src = photo_url;
+
+    document.getElementById("events_creater").href = `/events-creater/${id}`;
+    document.getElementById("reviews_creater").href = `/reviews-creater/${id}`;
+
+    function sendToDjango(id, username) {
+        const url = window.location.pathname;  // URL вашего Django-обработчика
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                telegram_id: id,
+                username: username,
+                create_event: false,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Success:", data);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
+</script>
+</html>

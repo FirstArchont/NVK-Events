@@ -1,0 +1,68 @@
+﻿{% extends 'app/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="main-window" id="main-window">
+    <div class="events">
+        <img src="{% static 'app/img/Background line.png' %}" class="background-line">
+        <h1 class="split-header">
+            <span>МЕРОПРИЯТИЯ</span>
+            <span>НВК</span>
+        </h1>
+        <img src="{% static 'app/img/Banner.jpg' %}" class="main-photo" alt="Дом в НВК" width="800" height="180" />
+        <h2>Мероприятия</h2>
+        <ul class="events-buttons">
+            <li class="event-button">
+                <a id="create-event">
+                    <button>
+                        <div class="image-container">
+                            <img src="{% static 'app/img/Create event photo.jpg' %}" alt="Создание события" width="317" height="208" />
+                            <img src="{% static 'app/img/Events overlay.svg' %}" class="events-overlay" width="320" height="135" />
+                            <p>Создать</p>
+                        </div>
+                    </button>
+                </a>
+            </li>
+            <li class="event-button">
+                <a href="{% url 'list_events' %}">
+                    <button>
+                        <div class="image-container">
+                            <img src="{% static 'app/img/Events list photo.jpg' %}" alt="Создание события" width="317" height="208" />
+                            <img src="{% static 'app/img/Events overlay.svg' %}" class="events-overlay" width="320" height="135" />
+                            <p>Список</p>
+                        </div>
+                    </button>
+                </a>
+
+            </li>
+        </ul>
+        <div class="popular-events">
+            <div class="popular-events-texts">
+                <h2>Популярные мероприятия сейчас</h2>
+            </div>
+            <ul class="popular-events-buttons">
+                {% if events %}
+                    {% for event in events %}
+                        <li>
+                            <button class="list-image-container" id="container{{ forloop.counter0 }}">
+                                <img src="/media/{{ event.cover }}" alt="Событие" width="378" height="171" />
+                                <img src="{% static 'app/img/Popular event overlay.png' %}" class="list-event-overlay" width="266" height="171" />
+                                <span>{{ event.title }}</span>
+                                <p>{{ event.short_description }}</p>
+                            </button>
+                            {% include "app/big_card.html" with index=forloop.counter0 %}
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <p class="empty-list">Пока нет никаких мероприятий</p>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    tg = window.Telegram.WebApp;
+    const profile = tg.initDataUnsafe.user?.id;
+    document.getElementById("create-event").href = `/create-event/${profile}`;
+</script>
+{% endblock %}

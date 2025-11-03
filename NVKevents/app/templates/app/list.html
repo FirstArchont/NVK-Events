@@ -1,0 +1,30 @@
+{% extends 'app/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="list">
+    <div class="list-panel">
+        <img src="{% static 'app/img/Background line.png' %}" class="background-line">
+        <h1>СПИСОК</h1>
+        <img src="{% static 'app/img/Banner short.jpg' %}" class="list-photo" alt="Дом в НВК" width="789" height="142" />
+        <button onclick="window.history.back();" class="creation-back-button">Назад</button>
+        <ul class="events-list">
+            {% if events %}
+                {% for event in events %}
+                    <li>
+                        <button class="list-image-container" id="container{{ forloop.counter0 }}">
+                            <img src="/media/{{ event.cover }}" alt="Событие" width="378" height="171"/>
+                            <img src="{% static 'app/img/Popular event overlay.png' %}" class="list-event-overlay" width="266" height="171" />
+                            <span>{{ event.title }}</span>
+                            <p>{{ event.short_description }}</p>
+                        </button>
+                        {% include "app/big_card.html" with index=forloop.counter0 %}
+                    </li>
+                {% endfor %}
+            {% else %}
+                <p class="empty-list">Пока нет никаких мероприятий</p>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

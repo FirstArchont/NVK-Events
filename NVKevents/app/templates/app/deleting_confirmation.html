@@ -1,0 +1,39 @@
+{% load static %}
+
+{% block deleting-confirmation %}
+<div class="modal-overlay" id="del{{ index|add:1 }}">
+    <div class="modal-card">
+        <div class="deleting-confirmation">
+            <div class="deleting-confirmation-body">
+                <p>Вы уверенны, что хотите удалить мероприятие "{{ event.title }}"?</p>
+                <div class="confirmation-buttons">
+                    <button id="no{{ index|add:1 }}">НЕТ</button>
+                    <a href="/delete/{{ event.id }}">ДА</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('delete{{ forloop.counter0 }}').addEventListener('click', function() {
+        document.getElementById('del{{ index|add:1 }}').style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Блокируем скролл страницы
+    });
+
+    // Закрытие при клике вне карточки
+    document.getElementById('del{{ index|add:1 }}').addEventListener('click', function(e) {
+        if (e.target === document.getElementById('del{{ index|add:1 }}')) {
+            document.getElementById('del{{ index|add:1 }}').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Закрытие при клике на кнопку "Назад"
+    document.getElementById('no{{ index|add:1 }}').addEventListener('click', function(e) {
+        if (e.target === document.getElementById('no{{ index|add:1 }}')) {
+            document.getElementById('del{{ index|add:1 }}').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+</script>
+{% endblock %}

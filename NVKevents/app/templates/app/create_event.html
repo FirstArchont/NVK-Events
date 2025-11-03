@@ -1,0 +1,181 @@
+{% extends 'app/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="creation-menu">
+    <div class="creation-panel">
+        <img src="{% static 'app/img/Background line.png' %}" class="background-line">
+        <h1>МЕНЮ СОЗДАНИЯ</h1>
+        <img src="{% static 'app/img/Banner short.jpg' %}" class="creation-photo" alt="Дом в НВК" width="789" height="142" />
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <ul class="event-parameters">
+                <li class="event-name">
+                    <div>Название:</div>
+                    {{ form.title }}
+                </li>
+                <li class="event-description">
+                    <div>Описание:</div>
+                    {{ form.description }}
+                </li>
+                <li class="event-short-description">
+                    <div>Краткое описание:</div>
+                    {{ form.short_description }}
+                </li>
+                <li class="event-place">
+                    <div>Место:</div>
+                    {{ form.location }}
+                </li>
+                <li class="event-time">
+                    <div>Время:</div>
+                    {{ form.datetime }}
+                </li>
+                <li class="event-requirements">
+                    <div>Требования к участникам:</div>
+                    {{ form.participants_requirements }}
+                </li>
+                <li class="event-members">
+                    <div>Количество мест:</div>
+                    {{ form.quantity }}
+                </li>
+                <li class="event-cover">
+                    <div>Обложка</div>
+                    {{ form.cover }}
+                </li>
+            </ul>
+            <div class="small-card">
+                <div class="card-title">
+                    <h2>Предпросмотр маленькой карточки</h2>
+                    <img src="{% static 'app/img/preview background.png' %}" width="497" height="31" />
+                </div>
+                <div class="small-card-preview">
+                    <div class="creation-image-container">
+                        <img id="cover-preview" src="{% static 'app/img/Event photo1.png' %}" alt="Событие" width="378" height="180">
+                        <img src="{% static 'app/img/Popular event overlay.png' %}" class="create-event-overlay" width="266" height="180">
+                        <span id="title-preview">Название</span>
+                        <p id="short-desc-preview">Краткое описание</p>
+                    </div>
+                </div>
+            </div>
+            <div class="big-card">
+                <div class="card-title">
+                    <h2>Предпросмотр большой карточки</h2>
+                    <img src="{% static 'app/img/preview background.png' %}" width="497" height="31" />
+                </div>
+
+                <div class="big-card-preview">
+                    <img id="big-cover-preview" src="{% static 'app/img/Big Card Image.png' %}" width="723" height="200" />
+                    <div class="title">
+                        <span id="big-title-preview">Название</span>
+                    </div>
+                    <div class="big-card-body">
+                        <div class="description-preview"><p id="description-preview">Высокий уровень вовлечения представителей целевой аудитории является четким доказательством простого факта: постоянный количественный рост и сфера нашей активности играет важную роль в формировании форм воздействия. Идейные соображения высшего порядка, а также базовый вектор развития позволяет оценить значение форм воздействия. Являясь всего лишь частью общей картины, некоторые особенности внутренней политики будут в равной степени предоставлены сами себе.</p></div>
+                        <div class="event-requirements-preview">
+                            <p>Требования к <br />подготовке:</p>
+                            <p id="participants_requirements-preview">Не заданы</p>
+                        </div>
+                        <div class="date-and-members-preview">
+                            <div class="date-preview">
+                                <p>Дата и время:</p>
+                                <p id="datetime-preview">17.01.2026</p>
+                            </div>
+                            <div class="members-preview">
+                                <p>Свободные места:</p>
+                                <p id="quantity-preview">60</p>
+                            </div>
+                        </div>
+                        <div class="place-preview">
+                            <p>Место:</p>
+                            <p id="location-preview">Екатеринбург, улица 100-летия Уральского университета</p>
+                        </div>
+                        <div class="buttons-preview">
+                            <p class="button-preview">Назад</p>
+                            <p class="button-preview">Записаться</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="create-button">Создать</button>
+        </form>
+    </div>
+</div>
+<script>
+    tg = window.Telegram.WebApp;
+    const profile = tg.initDataUnsafe.user?.id;
+
+    // Элементы формы
+    const titleInput = document.querySelector('input[name="title"]');
+    const shortDescInput = document.querySelector('textarea[name="short_description"]');
+    const descInput = document.querySelector('textarea[name="description"]');
+    const locationInput = document.querySelector('input[name="location"]');
+    const datetimeInput = document.querySelector('input[name="datetime"]');
+    const requirementsInput = document.querySelector('textarea[name="participants_requirements"]');
+    const seatsInput = document.querySelector('input[name="quantity"]');
+    const coverInput = document.querySelector('input[name="cover"]');
+    
+    // Элементы предпросмотра
+    const titlePreview = document.getElementById('title-preview');
+    const bigTitlePreview = document.getElementById('big-title-preview');
+    const shortDescPreview = document.getElementById('short-desc-preview');
+    const coverPreview = document.getElementById('cover-preview');
+    const bigCoverPreview = document.getElementById('big-cover-preview');
+    const descPreview = document.getElementById('description-preview');
+    const locationPreview = document.getElementById('location-preview');
+    const datetimePreview = document.getElementById('datetime-preview');
+    const requirementsPreview = document.getElementById('participants_requirements-preview');
+    const seatsPreview = document.getElementById('quantity-preview');
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Обработчики событий
+        titleInput.addEventListener('input', updatePreview);
+        shortDescInput.addEventListener('input', updatePreview);
+        descInput.addEventListener('input', updatePreview);
+        locationInput.addEventListener('input', updatePreview);
+        datetimeInput.addEventListener('input', updatePreview);
+        requirementsInput.addEventListener('input', updatePreview);
+        seatsInput.addEventListener('input', updatePreview);
+        coverInput.addEventListener('change', updateCoverPreview);
+        
+        
+        function updatePreview() {
+            titlePreview.textContent = titleInput.value || '"Название"';
+            bigTitlePreview.textContent = titleInput.value || '"Название"';
+            shortDescPreview.textContent = shortDescInput.value || '"Краткое описание"';
+            descPreview.textContent = descInput.value || '"Описание"';
+            locationPreview.textContent = locationInput.value || '"Место проведения"';
+            if (datetimeInput.value) {
+                const date = new Date(datetimeInput.value);
+                datetimePreview.textContent = date.toLocaleString('ru-RU', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } else {
+                datetimePreview.textContent = '"Дата и время"';
+            }
+            requirementsPreview.textContent = requirementsInput.value || '"Требования к участникам"';
+            seatsPreview.textContent = seatsInput.value || 0;
+        }
+        
+        function updateCoverPreview(event) {
+            const file = event.target.files[0];
+            coverFile = file;
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    coverPreview.src = e.target.result;
+                    coverPreview.style.display = 'block';
+                    bigCoverPreview.src = e.target.result;
+                    bigCoverPreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Инициализация предпросмотра
+        updatePreview();
+    });
+</script>
+{% endblock %}
